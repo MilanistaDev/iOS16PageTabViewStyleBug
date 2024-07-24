@@ -8,14 +8,29 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var viewModel = ContentViewModel()
+    @State private var selection = 0
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView(selection: $selection) {
+            ForEach(viewModel.contents.indices, id: \.self) { index in
+                Text(viewModel.contents[index].colorName)
+                    .font(.title)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(viewModel.contents[index].color)
+            }
         }
-        .padding()
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .ignoresSafeArea(.all)
+        .overlay(alignment: .center) {
+            if viewModel.isLoading {
+                ProgressView()
+            }
+        }
+        .onAppear {
+            viewModel.onAppear()
+        }
     }
 }
 
