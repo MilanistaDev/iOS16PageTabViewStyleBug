@@ -12,17 +12,23 @@ struct ContentView: View {
     @State private var selection = 0
 
     var body: some View {
-        TabView(selection: $selection) {
-            ForEach(viewModel.contents.indices, id: \.self) { index in
-                Text(viewModel.contents[index].colorName)
-                    .font(.title)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(viewModel.contents[index].color)
+        VStack {
+            if viewModel.contents.isEmpty {
+                EmptyView()
+            } else {
+                TabView(selection: $selection) {
+                    ForEach(viewModel.contents.indices, id: \.self) { index in
+                        Text(viewModel.contents[index].colorName)
+                            .font(.title)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(viewModel.contents[index].color)
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .ignoresSafeArea(.all)
             }
         }
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .ignoresSafeArea(.all)
         .overlay(alignment: .center) {
             if viewModel.isLoading {
                 ProgressView()
